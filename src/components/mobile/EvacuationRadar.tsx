@@ -36,9 +36,6 @@ export const EvacuationRadar: React.FC<EvacuationRadarProps> = ({
                 <span className="w-2 h-2 rounded-full bg-red-400 animate-ping inline-block" />
                 LIFE THREAT ACTIVE
               </span>
-              <span className="text-[10px] font-bold text-white/80 uppercase tracking-tight">
-                Priority 1
-              </span>
             </div>
             <h2 className="text-[17px] font-black uppercase tracking-tight text-white leading-tight drop-shadow-xs">
               FLASH FLOOD EMERGENCY
@@ -247,11 +244,10 @@ export const EvacuationRadar: React.FC<EvacuationRadarProps> = ({
           </svg>
 
           {/* Floating Elevation Badge */}
-          <div className="absolute top-2 left-2 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-md text-[11px] font-bold text-[#1A1C1C] shadow-xs border border-[#E9E8E8] flex items-center gap-1.5 pointer-events-none">
-            <span className="material-symbols-outlined text-[15px] text-[#855400]">terrain</span>
-            <span>+32m Elevation Gain</span>
+          <div className="absolute top-2 left-2 w-fit max-w-fit inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-md text-[11px] font-bold text-[#1A1C1C] shadow-xs border border-[#E9E8E8] whitespace-nowrap pointer-events-none">
+            <span className="leading-none whitespace-nowrap">+32m Elevation Gain</span>
             {isMapExpanded && (
-              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-extrabold ml-1">
+              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-extrabold leading-none inline-flex items-center whitespace-nowrap">
                 Ridge Dry
               </span>
             )}
@@ -260,8 +256,8 @@ export const EvacuationRadar: React.FC<EvacuationRadarProps> = ({
           {/* Expanded View Helper Tip */}
           {isMapExpanded && (
             <div className="absolute top-2 right-2 px-2 py-1 rounded-lg bg-black/70 backdrop-blur-md text-[10px] font-semibold text-white flex items-center gap-1 pointer-events-none">
-              <span className="material-symbols-outlined text-[13px] text-emerald-400">gps_fixed</span>
-              <span>Live Sensor GIS</span>
+              <span className="material-symbols-outlined text-[13px] text-emerald-400 leading-none shrink-0 inline-flex items-center justify-center">gps_fixed</span>
+              <span className="leading-none inline-flex items-center">Live Sensor GIS</span>
             </div>
           )}
 
@@ -274,10 +270,10 @@ export const EvacuationRadar: React.FC<EvacuationRadarProps> = ({
             className="absolute bottom-2 right-2 px-3 py-1.5 rounded-lg bg-white/95 backdrop-blur-md text-[11px] font-bold text-[#005EB2] hover:bg-white active:scale-95 shadow-md border border-[#005EB2]/30 flex items-center gap-1.5 transition-all z-10"
             title={isMapExpanded ? 'Collapse Map' : 'Expand Map to cover screen'}
           >
-            <span className="material-symbols-outlined text-[16px]">
+            <span className="material-symbols-outlined text-[16px] leading-none shrink-0 inline-flex items-center justify-center">
               {isMapExpanded ? 'fullscreen_exit' : 'fullscreen'}
             </span>
-            <span>{isMapExpanded ? 'Collapse Map' : 'Expand Map'}</span>
+            <span className="leading-none inline-flex items-center">{isMapExpanded ? 'Collapse Map' : 'Expand Map'}</span>
           </button>
         </div>
 

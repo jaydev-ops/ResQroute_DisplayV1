@@ -39,7 +39,7 @@ export const AuthorityIncidentModeration: React.FC<AuthorityIncidentModerationPr
           <span className="material-symbols-outlined text-[20px]">arrow_back_ios</span>
           <span>Command</span>
         </button>
-        <h1 className="text-base font-bold text-[#1A1C1C]">Incident Moderation</h1>
+        <h1 className="text-base font-bold text-[#1A1C1C]">Authority</h1>
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#BA1A1A] text-white font-bold text-[11px]">
           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
           Urgent

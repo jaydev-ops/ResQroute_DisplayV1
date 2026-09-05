@@ -30,19 +30,19 @@ export const IPhoneDeviceFrame: React.FC<IPhoneDeviceFrameProps> = ({
           {/* Status Bar */}
           <div className="absolute top-0 inset-x-0 h-11 z-50 px-6 flex items-center justify-between text-[13px] font-semibold text-[#1A1C1C] pointer-events-none bg-gradient-to-b from-[#FAF9F9]/90 to-transparent">
             <span>{currentTime}</span>
-            {/* Dynamic Island */}
-            <div className="w-[105px] h-[26px] bg-black rounded-full flex items-center justify-between px-2.5 shadow-sm pointer-events-auto">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#005EB2] animate-pulse" title="resQroute Live Telemetry Active" />
-              <div className="flex items-center gap-1">
-                <span className="text-[9px] font-bold text-white tracking-wider font-mono">LIVE</span>
+            {/* Dynamic Island Capsule Span */}
+            <span className="absolute left-1/2 -translate-x-1/2 top-2 w-[130px] h-[34px] bg-black rounded-full flex items-center justify-between px-3 shadow-md pointer-events-auto">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#005EB2] animate-pulse shrink-0" title="resQroute Live Telemetry Active" />
+              <span className="flex items-center gap-1.5 shrink-0">
+                <span className="text-[10px] font-bold text-white tracking-wider font-mono">LIVE</span>
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              </div>
-            </div>
+              </span>
+            </span>
             {/* Status Icons */}
             <div className="flex items-center gap-1 text-[#1A1C1C]">
               <span className="text-[11px] font-bold">5G</span>
               <span className="material-symbols-outlined text-[15px]">wifi</span>
-              <span className="material-symbols-outlined text-[17px] -rotate-90">battery_full_alt</span>
+              <span className="material-symbols-outlined text-[17px] inline-block rotate-90">battery_full_alt</span>
             </div>
           </div>
 

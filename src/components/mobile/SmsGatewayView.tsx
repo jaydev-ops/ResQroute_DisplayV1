@@ -15,6 +15,9 @@ export const SmsGatewayView: React.FC<SmsGatewayViewProps> = ({
   const [hasReceivedReply, setHasReceivedReply] = useState(true);
   const [compassDegrees, setCompassDegrees] = useState(24);
   const [showCompassModal, setShowCompassModal] = useState(false);
+  const [showTopoGridModal, setShowTopoGridModal] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [testQueryResult, setTestQueryResult] = useState<string | null>(null);
 
   const handleSendText = () => {
     setIsSending(true);
@@ -22,6 +25,43 @@ export const SmsGatewayView: React.FC<SmsGatewayViewProps> = ({
       setIsSending(false);
       setHasReceivedReply(true);
     }, 900);
+  };
+
+  const handleCopyTemplate = async () => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(outgoingText);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = outgoingText;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    } catch {
+      const textArea = document.createElement('textarea');
+      textArea.value = outgoingText;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    }
+  };
+
+  const handleTestQuery = () => {
+    setTestQueryResult('Querying 19.0760, 72.8777 in local cache...');
+    setTimeout(() => {
+      setTestQueryResult('✓ Elevation: +28.4m MSL • Dry High Ground (Resolved locally in 1.4ms)');
+    }, 450);
   };
 
   return (
@@ -208,17 +248,23 @@ export const SmsGatewayView: React.FC<SmsGatewayViewProps> = ({
 
         <div className="grid grid-cols-2 gap-2">
           <button
-            onClick={() => navigator.clipboard?.writeText(outgoingText)}
-            className="h-11 rounded-xl bg-[#EFEEED] text-xs font-semibold text-[#1A1C1C] flex items-center justify-center gap-1.5"
+            onClick={handleCopyTemplate}
+            className={`h-11 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-95 ${
+              isCopied
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'bg-[#EFEEED] text-[#1A1C1C] hover:bg-[#E3E2E2]'
+            }`}
           >
-            <span className="material-symbols-outlined text-[16px]">content_copy</span>
-            <span>Copy Template</span>
+            <span className="material-symbols-outlined text-[16px]">
+              {isCopied ? 'check' : 'content_copy'}
+            </span>
+            <span>{isCopied ? 'Copied to Clipboard!' : 'Copy Template'}</span>
           </button>
           <button
-            onClick={() => alert('Offline Topo Grid tiles loaded from IndexedDB cache.')}
-            className="h-11 rounded-xl bg-[#EFEEED] text-xs font-semibold text-[#1A1C1C] flex items-center justify-center gap-1.5"
+            onClick={() => setShowTopoGridModal(true)}
+            className="h-11 rounded-xl bg-[#EFEEED] hover:bg-[#E3E2E2] text-xs font-semibold text-[#1A1C1C] flex items-center justify-center gap-1.5 transition-all active:scale-95"
           >
-            <span className="material-symbols-outlined text-[16px]">map</span>
+            <span className="material-symbols-outlined text-[16px] text-[#005EB2]">map</span>
             <span>Offline Topo Grid</span>
           </button>
         </div>
@@ -227,6 +273,134 @@ export const SmsGatewayView: React.FC<SmsGatewayViewProps> = ({
           Works with or without mobile data. Your phone uses satellite compass.
         </p>
       </div>
+
+      {/* Offline Topo Grid Cache Inspection Modal */}
+      {showTopoGridModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+          <div className="w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl flex flex-col space-y-3.5 max-h-[90vh] overflow-y-auto no-scrollbar">
+            {/* Modal Header */}
+            <div className="w-full flex justify-between items-center border-b border-[#E9E8E8] pb-2.5">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#005EB2]/10 text-[#005EB2] flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[18px]">terrain</span>
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-[#1A1C1C] leading-none">Offline Topo Grid</h3>
+                  <p className="text-[10px] text-[#524436] font-medium mt-0.5">
+                    IndexedDB Micro-GIS Cache
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowTopoGridModal(false)}
+                className="w-8 h-8 rounded-full bg-[#F4F3F3] hover:bg-[#E9E8E8] flex items-center justify-center text-[#1A1C1C] transition-colors"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+
+            {/* Offline Cache Status Chip */}
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 border border-emerald-200/60 text-[11px]">
+              <div className="flex items-center gap-1.5 text-emerald-800 font-bold">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>IndexedDB Cache Ready</span>
+              </div>
+              <span className="text-emerald-700 font-mono font-semibold">42 MB • Synced</span>
+            </div>
+
+            {/* Micro-GIS Topological Contour Visualizer */}
+            <div className="w-full rounded-2xl bg-[#1A1C1C] p-3 text-white space-y-2">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-bold text-[#FFDDB7]">Sector 17 Elevation Profile</span>
+                <span className="text-xs text-white/70 font-mono">19.0760° N, 72.8777° E</span>
+              </div>
+
+              {/* Elevation Step Graph */}
+              <div className="space-y-1.5 pt-1 text-[11px]">
+                {/* Ridge Road Safe Corridor */}
+                <div className="flex items-center justify-between p-1.5 rounded-lg bg-emerald-900/40 border border-emerald-500/30">
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[15px] text-emerald-400">check_circle</span>
+                    <span className="font-semibold text-emerald-100">Ridge Road Corridor</span>
+                  </div>
+                  <span className="font-mono font-bold text-emerald-300">+32m (Safe)</span>
+                </div>
+
+                {/* St. Jude Shelter Destination */}
+                <div className="flex items-center justify-between p-1.5 rounded-lg bg-blue-900/40 border border-blue-500/30">
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[15px] text-blue-400">night_shelter</span>
+                    <span className="font-semibold text-blue-100">St. Jude Pavilion</span>
+                  </div>
+                  <span className="font-mono font-bold text-blue-300">+30m MSL</span>
+                </div>
+
+                {/* Mid-Slope Hillside */}
+                <div className="flex items-center justify-between p-1.5 rounded-lg bg-amber-900/30 border border-amber-500/20">
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[15px] text-amber-400">arrow_upward</span>
+                    <span className="font-semibold text-amber-100">Hillside Access Ramp</span>
+                  </div>
+                  <span className="font-mono font-bold text-amber-300">+14m MSL</span>
+                </div>
+
+                {/* Drowned Canal Road Hazard */}
+                <div className="flex items-center justify-between p-1.5 rounded-lg bg-red-900/40 border border-red-500/30">
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[15px] text-red-400">flood</span>
+                    <span className="font-semibold text-red-100">Canal Road Expressway</span>
+                  </div>
+                  <span className="font-mono font-bold text-red-300">+2m (Flooded 48cm)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Offline Cache Breakdown Metrics */}
+            <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
+              <div className="p-2 rounded-xl bg-[#F4F3F3] border border-[#E9E8E8]">
+                <div className="font-bold text-[#1A1C1C]">28 MB</div>
+                <div className="text-[#524436]">DEM Contours</div>
+              </div>
+              <div className="p-2 rounded-xl bg-[#F4F3F3] border border-[#E9E8E8]">
+                <div className="font-bold text-[#1A1C1C]">10 MB</div>
+                <div className="text-[#524436]">Road Graph</div>
+              </div>
+              <div className="p-2 rounded-xl bg-[#F4F3F3] border border-[#E9E8E8]">
+                <div className="font-bold text-[#1A1C1C]">4 MB</div>
+                <div className="text-[#524436]">Safe Havens</div>
+              </div>
+            </div>
+
+            {/* Test Query Diagnostic */}
+            <div className="space-y-1.5">
+              <button
+                onClick={handleTestQuery}
+                className="w-full py-2 rounded-xl bg-[#F4F3F3] hover:bg-[#E9E8E8] text-[#005EB2] text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <span className="material-symbols-outlined text-[16px]">speed</span>
+                <span>Test Offline Elevation Query</span>
+              </button>
+              {testQueryResult && (
+                <div className="p-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 text-[11px] font-medium animate-fadeIn">
+                  {testQueryResult}
+                </div>
+              )}
+            </div>
+
+            {/* Footer Action */}
+            <button
+              onClick={() => {
+                setShowTopoGridModal(false);
+                setShowCompassModal(true);
+              }}
+              className="w-full h-11 rounded-xl bg-[#005EB2] hover:bg-[#005EB2]/95 text-white font-bold text-xs shadow-md flex items-center justify-center gap-1.5 transition-all"
+            >
+              <span className="material-symbols-outlined text-[16px]">explore</span>
+              <span>Navigate Offline via Compass</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Compass Modal */}
       {showCompassModal && (

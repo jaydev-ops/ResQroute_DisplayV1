@@ -42,7 +42,7 @@ export const ApiDocsSection: React.FC = () => {
     shelter: {
       endpoint: 'GET /api/v1/shelters/{id}/telemetry',
       desc: 'Returns live shelter occupancy, arriving flux rate per minute, medical facility status, and quorum capacity to prevent the thundering herd problem.',
-      curl: `curl -X GET https://api.resqroute.org/v1/shelters/shelter-st-jude-17/telemetry \\
+      curl: `curl -X GET https://api.resqroute.org/v1/shelters/shelter-st-jude-17/telemetry\\
   -H "Authorization: Bearer <API_TOKEN>"`,
       response: `{
   "shelter_id": "shelter-st-jude-17",
