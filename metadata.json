@@ -1,0 +1,6 @@
+{
+  "name": "resQroute - Disaster Evacuation & Shelter Intelligence",
+  "description": "Intelligent hazard-based red zone identification, carrying capacity assessment, and risk-aware evacuation routing platform.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
